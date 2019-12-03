@@ -1,5 +1,5 @@
 <template lang="html">
-	<form id="sightings-form">
+	<form id="sightings-form" v-on:submit="addSighting" method="post">
 		<h2>Add a Sighting</h2>
 		<div class="formWrap">
 			<label for="species">Species:</label>
@@ -38,7 +38,7 @@ export default {
         species: this.species,
         location: this.location,
         date: this.date
-      }
+      };
       SightingService.postSighting(sighting)
       .then(res => eventBus.$emit('sighting-added', res))
     }

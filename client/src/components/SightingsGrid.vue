@@ -4,7 +4,7 @@
 			<h2>{{ sighting.species }}</h2>
 			<p>{{ sighting.location }} on {{ sighting.date|format }}</p>
 
-			<button>Delete Sighting</button>
+			<button v-on:click="handleClick">Delete Sighting</button>
 		</div>
 	</div>
 </template>
@@ -21,8 +21,23 @@ export default {
 			return new Date(value).toLocaleString().substring(0, 10);
 		}
 	},
-	methods: {
+	mounted(){
+		SightingService.getSightings()
+			.then(sightings => this.sightings = sightings);
 
+			eventBus.$on('sighting-added', (sighting) => {
+				this.sightings.push(sighting)
+			})
+
+			eventBus.$on('sighting-deleted', (id) => {
+				let index = this.sightings.findIndex(sighting => sighting._id === id)
+				this.sightings.splice(index, 1)
+			})
+	},
+	methods: {
+		handleClick(){
+			eventBus.$emit('sighting-deleted', sighting.id)
+		}
 	}
 }
 </script>
